@@ -24,7 +24,7 @@ const Header = () => {
   return (
     <Navbar className='font-semibold bg-dark py-3' classNames={{ item: 'data-[active=true]:text-primary' }}>
       <NavbarBrand>
-        <Link href="/" className='text-primary text-2xl font-josefin'>Pizza Fiesta</Link>
+        <Link href="/" className='text-primary text-2xl font-josefin'>Techsand Fiesta</Link>
       </NavbarBrand>
       <NavbarContent className="gap-8" justify="center">
         <NavbarItem isActive={pathname === '/'}>
