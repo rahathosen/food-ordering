@@ -11,8 +11,8 @@ import { useParams } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import OrderStatusDropdown from "@/components/features/orders/OrderStatusDropdown";
 
-const OrderPage = () => {
-  const { id } = useParams();
+const OrderPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // Ensure `id` is always a string
   const { clearCart } = useContext(CartContext);
   const [showMessage, setShowMessage] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);
@@ -28,13 +28,13 @@ const OrderPage = () => {
     if (id) {
       fetch(`/api/orders?_id=${id}`)
         .then((res) => res.json())
-        .then((data) => {
+        .then((data: Order) => {
           setOrder(data);
-        });
+        })
+        .catch((error) => console.error("Error fetching order:", error));
     }
   }, [id]);
 
-  // ✅ Move `handleStatusChange` outside `useEffect`
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     await fetch(`/api/orders`, {
       method: "PATCH",
@@ -42,12 +42,12 @@ const OrderPage = () => {
       body: JSON.stringify({ _id: orderId, status: newStatus }),
     });
 
-    setOrder((prev) => prev ? { ...prev, status: newStatus } : null);
+    setOrder((prev) => (prev ? { ...prev, status: newStatus } : null));
   };
 
   let subtotal = 0;
   if (order?.cartProducts) {
-    order?.cartProducts.forEach((cartProduct) => {
+    order.cartProducts.forEach((cartProduct) => {
       subtotal += calCartProductPrice(cartProduct) as number;
     });
   }
@@ -94,20 +94,15 @@ const OrderPage = () => {
                 Delivery Information
               </h2>
               <div className="rounded-xl p-4 shadow-xl bg-gray-800">
-                <div>
-                  <AddressInputs
-                    addressProps={order}
-                    disabled={true}
-                    setAddressProps={function (
-                      propName: string,
-                      value: string
-                    ): void {}}
-                  />
-                </div>
+                <AddressInputs
+                  addressProps={order}
+                  disabled={true}
+                  setAddressProps={() => {}}
+                />
               </div>
               <div className="pt-4">
                 <OrderStatusDropdown
-                  orderId={order._id}
+                  orderId={order._id ?? ""}
                   currentStatus={order.status}
                   onChangeStatus={handleStatusChange}
                 />
