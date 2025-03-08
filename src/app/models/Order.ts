@@ -13,7 +13,7 @@ const OrderSchema = new mongoose.Schema(
     paid: { type: Boolean, default: false },
     status: {
       type: String,
-      enum: ["ordered", "cooking", "packaging", "delivering", "delivered"],
+      enum: ["ordered", "cooking", "packaging", "delivering", "delivered", "canceled"],
       default: "ordered",
     },
   },

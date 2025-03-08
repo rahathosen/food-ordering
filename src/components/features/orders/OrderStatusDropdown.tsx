@@ -7,7 +7,7 @@ interface OrderStatusDropdownProps {
   onChangeStatus: (orderId: string, newStatus: string) => void;
 }
 
-const statuses = ["ordered", "cooking", "packaging", "delivering", "delivered"];
+const statuses = ["ordered", "cooking", "packaging", "delivering", "delivered", "canceled"];
 
 const OrderStatusDropdown: React.FC<OrderStatusDropdownProps> = ({
   orderId,
