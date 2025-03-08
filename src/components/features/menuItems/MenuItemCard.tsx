@@ -5,6 +5,7 @@ import MenuItemAddOn from "@/types/MenuItemAddOn";
 import MenuItemPopUp from "./MenuItemPopUp";
 import { useSession } from "next-auth/react";
 import { Button, Link } from "@nextui-org/react";
+import NextLink from "next/link";
 
 interface MenuItemCardProps {
   menuItem: MenuItem;
@@ -33,35 +34,56 @@ const MenuItemCard = ({ menuItem }: MenuItemCardProps) => {
 
   return (
     <>
-      <div className='flex flex-col gap-3 justify-center text-center items-center'>
-        <div style={{ backgroundImage: `url(${menuItem.image})`, borderRadius: '50%' }} className='bg-cover bg-center bg-no-repeat mb-4 w-[200px] h-[200px]'></div>
+      <div className="flex flex-col gap-3 justify-center text-center items-center">
+        {/* ✅ Clickable Image & Name - Links to Details Page */}
+        <NextLink href={`/menu/${menuItem._id}`} passHref>
+          <div 
+            style={{ 
+              backgroundImage: `url(${menuItem.image || "/placeholder.jpg"})`, 
+              borderRadius: "50%" 
+            }} 
+            className="bg-cover bg-center bg-no-repeat mb-4 w-[200px] h-[200px] cursor-pointer transition hover:scale-105"
+          />
+        </NextLink>
+
         <div className="flex flex-col gap-4">
-          <h3>{menuItem.name}</h3>
-          <p className='text-gray-400 line-clamp-3'>{menuItem.description}</p>
-          <div className='flex items-center justify-center gap-6'>
-            <p className='text-primary'>
-              {hasSizesOrExtras && (
-                <span >From: </span>
-              )}
+          <NextLink href={`/menu/${menuItem._id}`} passHref>
+            <h3 className="cursor-pointer hover:text-primary transition">{menuItem.name}</h3>
+          </NextLink>
+
+          <p className="text-gray-400 line-clamp-3">{menuItem.description}</p>
+
+          <div className="flex items-center justify-center gap-6">
+            <p className="text-primary">
+              {hasSizesOrExtras && <span>From: </span>}
               ${(menuItem.basePrice as number).toFixed(2)}
             </p>
+
             {session ? (
-            <button className="border-2 bg-dark hover:bg-primary hover:text-dark rounded-full transition-all whitespace-nowrap px-4 py-2"  onClick={handleAddToCartClick}>Add to cart</button>
+              <button
+                className="border-2 bg-dark hover:bg-primary hover:text-dark rounded-full transition-all whitespace-nowrap px-4 py-2"
+                onClick={handleAddToCartClick}
+              >
+                Add to cart
+              </button>
             ) : (
-              <Button as={Link} href='/login' radius='none' size='sm' className='bg-transparent border hover:bg-primary hover:text-dark'>
+              <Button as={Link} href="/login" radius="none" size="sm" className="bg-transparent border hover:bg-primary hover:text-dark">
                 Order
               </Button>
             )}
           </div>
         </div>
       </div>
-      {showPopUp &&
+
+      {showPopUp && (
         <MenuItemPopUp
           menuItem={menuItem}
           setShowPopUp={setShowPopUp}
-          onAdd={(item: MenuItem, selectedSize: MenuItemAddOn, selectedExtras: MenuItemAddOn[]) => handlePopUpAddToCart(item, selectedSize, selectedExtras)} />}
+          onAdd={(item: MenuItem, selectedSize: MenuItemAddOn, selectedExtras: MenuItemAddOn[]) => handlePopUpAddToCart(item, selectedSize, selectedExtras)}
+        />
+      )}
     </>
-  )
-}
+  );
+};
 
-export default MenuItemCard
+export default MenuItemCard;
