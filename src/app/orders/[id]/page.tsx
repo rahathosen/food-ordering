@@ -9,6 +9,7 @@ import Order from "@/types/Order";
 import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
 import { useParams } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
+import OrderStatusDropdown from "@/components/features/orders/OrderStatusDropdown";
 
 const OrderPage = () => {
   const { id } = useParams();
@@ -32,6 +33,17 @@ const OrderPage = () => {
         });
     }
   }, [id]);
+
+  // ✅ Move `handleStatusChange` outside `useEffect`
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    await fetch(`/api/orders`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ _id: orderId, status: newStatus }),
+    });
+
+    setOrder((prev) => prev ? { ...prev, status: newStatus } : null);
+  };
 
   let subtotal = 0;
   if (order?.cartProducts) {
@@ -76,6 +88,7 @@ const OrderPage = () => {
                 paid={order.paid}
               />
             </div>
+
             <div className="col-span-2">
               <h2 className="font-semibold py-3 text-primary">
                 Delivery Information
@@ -91,6 +104,13 @@ const OrderPage = () => {
                     ): void {}}
                   />
                 </div>
+              </div>
+              <div className="pt-4">
+                <OrderStatusDropdown
+                  orderId={order._id}
+                  currentStatus={order.status}
+                  onChangeStatus={handleStatusChange}
+                />
               </div>
             </div>
           </div>

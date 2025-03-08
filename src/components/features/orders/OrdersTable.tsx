@@ -37,7 +37,7 @@ const OrdersTable = ({ orders, isAdmin }: OrdersTableProps) => {
           Customer Email
         </TableColumn>
         <TableColumn>Item Name</TableColumn>
-        {/* <TableColumn>Payment Status</TableColumn> */}
+        <TableColumn>Order Status</TableColumn>
         <TableColumn>Actions</TableColumn>
       </TableHeader>
       {orders.length > 0 ? (
@@ -60,14 +60,27 @@ const OrdersTable = ({ orders, isAdmin }: OrdersTableProps) => {
                     } more`
                   : order.cartProducts[0].menuItem.name}
               </TableCell>
-              {/* <TableCell>
-                {order.paid
-                  ? <Chip className="capitalize" color='success' size="md" variant="flat">Paid</Chip>
-                  : <Chip className="capitalize" color='danger' size="md" variant="flat">Cancelled</Chip>}
-              </TableCell> */}
-              {/* <TableCell>
-                   <Chip className="capitalize" color='success' size="md" variant="flat">Paid</Chip>
-              </TableCell> */}
+              <TableCell>
+                <Chip
+                  className="capitalize"
+                  color={
+                    order.status === "ordered"
+                      ? "success"
+                      : order.status === "cooking"
+                      ? "warning"
+                      : order.status === "delivered"
+                      ? "primary"
+                      : order.status === "canceled"
+                      ? "danger"
+                      : "default"
+                  }
+                  size="md"
+                  variant="flat"
+                >
+                  {order.status}
+                </Chip>
+              </TableCell>
+
               <TableCell>
                 <div className="relative flex items-center justify-center">
                   <Tooltip content="View order">

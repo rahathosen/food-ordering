@@ -1,6 +1,7 @@
 import CartProduct from "./CartProduct"
 
 type Order = {
+  status: any;
   _id?: string,
   userEmail: string,
   phone: string,

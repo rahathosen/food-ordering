@@ -23,3 +23,16 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(await Order.find({ userEmail: userEmail }));
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  mongoose.connect(process.env.MONGODB_URI!);
+  const { _id, status } = await req.json();
+
+  const updatedOrder = await Order.findByIdAndUpdate(
+    _id,
+    { status },
+    { new: true }
+  );
+
+  return NextResponse.json(updatedOrder);
+}
